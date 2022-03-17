@@ -8,23 +8,18 @@ trigger:
 
 pool:
   vmImage: windows-2019
-  demands:
-  - msbuild
-  - visualstudio
+
+variables:
+  percorsoPreBuild: '../DirectoryPreBuild'
 
 #########   PROCESSO DI PREBUILD   #########
 
 steps:
 
-#aggiunta VSBuild
-- task: VSBuild@1
+#installazione di Directx
+- task: PowerShell@2
   inputs:
-    solution: '**\*.sln' 
-    vsVersion: 'latest'
-    platform: 'x64'
-    configuration: '$(buildConfiguration)'
-    msbuildArchitecture: 'x64'
-    logProjectEvents: true
-    createLogFile: false
-    logFileVerbosity: 'diagnostic'
+    script: choco install directx-sdk
+    verbosePreference: continue
+  displayName: installare directx.sdk
 
