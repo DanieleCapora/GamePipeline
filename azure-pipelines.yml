@@ -19,3 +19,6 @@ steps:
     packageType: sdk
     version: 5.x
 
+#cambiare la politica di esecuzione in powershell
+- powershell: Set-ExecutionPolicy AllSigned
+  displayName: cambiare politica powershell in AllSigned
