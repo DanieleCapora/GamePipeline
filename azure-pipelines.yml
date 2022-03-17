@@ -12,13 +12,8 @@ pool:
 #########   PROCESSO DI PREBUILD   #########
 
 steps:
-#installazione .NET
-- task: UseDotNet@2
-  displayName: Use .NET SDK 5.x
-  inputs:
-    packageType: sdk
-    version: 5.x
+
 
 #cambiare la politica di esecuzione in powershell
-- powershell: Set-ExecutionPolicy AllSigned
-  displayName: cambiare politica powershell in AllSigned
+- powershell: Get-ExecutionPolicy –List
+  displayName: guardiamo un pò 
