@@ -14,6 +14,6 @@ pool:
 steps:
 
 
-#cambiare la politica di esecuzione in powershell
-- powershell: Get-ExecutionPolicy –List
-  displayName: guardiamo un pò 
+#installare Chocolatey sulla powershell
+- powershell: Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+  displayName: installazione chocolately sulla powershell
