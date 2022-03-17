@@ -4,16 +4,18 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
+- '*'
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: windows-2019
+
+#########   PROCESSO DI PREBUILD   #########
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+#installazione .NET
+- task: UseDotNet@2
+  displayName: Use .NET SDK 5.x
+  inputs:
+    packageType: sdk
+    version: 5.x
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
