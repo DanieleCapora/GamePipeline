@@ -25,3 +25,5 @@ steps:
      numeroFile: $(numeroFilePNG)
      extension: $(extensionPNG)
 
+ - powershell: cat checkGrap.ps1
+
