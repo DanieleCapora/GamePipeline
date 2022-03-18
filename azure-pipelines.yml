@@ -15,16 +15,12 @@ variables:
 
 
 
-steps:
 
-- task: PythonScript@0
-  inputs:
-    scriptSource: 'inline'
-    Script: |
-      url = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip"
-
-      import webbrowser
-      webbrowser.open(url)
-      print("The web browser opened and the file is downloaded")
-  displayName: download of steamCMD
+#controllo file .png
+extends:
+ template: checkGrafic.yml
+ parameters:
+   percorsoPreBuild: $(percorsoPreBuild)
+   numeroFile: $(numeroFilePNG)
+   extension: $(extensionPNG)
 
