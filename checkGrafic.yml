@@ -2,10 +2,6 @@
 parameters: 
 - name: percorsoPreBuild
   type: string
-- name: numeroFile
-  type: string
-- name: extension
-  type: string
 
 steps:
 #creazione del programma shell per controllo grafica
@@ -19,16 +15,3 @@ steps:
         exit 1
       }'
   displayName: creazione shell program baseGrafica.ps1
-
-- powershell: cat baseGrafica.ps1
-  displayName: vediaml
-
- #controllo file 
-- task: PowerShell@2
-  inputs:
-   targetType: filePath
-   filePath: $(System.DefaultWorkingDirectory)\baseGrafica.ps1
-   arguments: >
-     -input1 3
-     -extens $(extension)
-  displayName: controllo file
