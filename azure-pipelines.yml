@@ -12,18 +12,37 @@ pool:
 variables:
   percorsoPreBuild: '.\DirectoryPreBuild'
   numeroFilePNG: '3'
-  extensionPNG: 'png'
+  extensionPNG: "png"
+  numeroFileGIF: '3'
+  extensionGIF: "gif"
+  numeroFileDDS: '4'
+  extensionDDS: "dds"
+  numeroFIleMP3: '5'
+  extensionMP3: "mp3"
+  numeroFileWav: '7'
+  extensionWAV: "wav"
 
 
-
-
-
-#controllo file .png
 steps:
- - template: checkGrafic.yml
-   parameters:
-     percorsoPreBuild: $(percorsoPreBuild)
-     numeroFile: $(numeroFilePNG)
-     extension: $(extensionPNG)
+#controllo file .png
+- template: checkGrafic.yml
+  parameters:
+    percorsoPreBuild: $(percorsoPreBuild)
+    numeroFile: $(numeroFilePNG)
+    extension: $(extensionPNG)
+
+#controllo file .gif
+- template: checkGrafic.yml
+  parameters:
+    percorsoPreBuild: $(percorsoPreBuild)
+    numeroFile: $(numeroFileGIF)
+    extension: $(extensionGIF)
+
+#controllo file .dds
+- template: checkGrafic.yml
+  parameters:
+    percorsoPreBuild: $(percorsoPreBuild)
+    numeroFile: $(numeroFileDDS)
+    extension: $(extensionDDS)
      
 
