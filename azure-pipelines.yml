@@ -23,7 +23,7 @@ steps:
  - template: checkGrafic.yml
    parameters:
      percorsoPreBuild: $(percorsoPreBuild)
-     numeroFile: $(numeroFilePNG)
+     numeroFile: 3
      extension: $(extensionPNG)
      
 
