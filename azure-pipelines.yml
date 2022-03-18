@@ -27,68 +27,7 @@ variables:
 
 steps:
 
-#creazione del programma shell per controllo grafica
-- powershell:  |
-      new-item baseGrafica.ps1 -type file -force -value '
-      param ($input1, $extension) 
-      $input2 = (Get-ChildItem -path $(percorsoPreBuild)\assets\grafica\*.$extension).count
-      if($input1 -ne $input2)
-      {
-        Write-Error "Files with the .$(extension) extension are in a different number from the documentation"
-        exit 1
-      }'
-  displayName: creazione shell program baseGrafica.ps1
-
-#controllo file .png
-- task: PowerShell@2
-  inputs:
-    filePath: '$(System.DefaultWorkingDirectory)\baseGrafica.ps1'
-    arguments: '-input1 $(numeroFilePNG) -extension $(extensionPNG)'
-    runScriptInSeparateScope: true
-
-
-#controllo file .gif
-- task: PowerShell@2
-  inputs:
-    filePath: '$(System.DefaultWorkingDirectory)\baseGrafica.ps1'
-    arguments: '-input1 $(numeroFileGIF) -extension $(extensionGIF)'
-    runScriptInSeparateScope: true
-
-#controllo file .dds
-- task: PowerShell@2
-  inputs:
-    filePath: '$(System.DefaultWorkingDirectory)\baseGrafica.ps1'
-    arguments: '-input1 $(numeroFileDDS) -extension $(extensionDDS)'
-    runScriptInSeparateScope: true
-
-
-#creazione del programma shell per controllo musica
-- powershell:  |
-      new-item baseAudio.ps1 -type file -force -value '
-      param ($input1, $extension) 
-      $input2 = (Get-ChildItem -path $(percorsoPreBuild)\assets\audio\*.$extension).count
-      if($input1 -ne $input2)
-      {
-        Write-Error "Files with the .$(extension) extension are in a different number from the documentation"
-        exit 1
-      }'
-  displayName: creazione shell program baseAudio.ps1
-
-#controllo file .mp3
-- task: PowerShell@2
-  inputs:
-   targetType: filePath
-   filePath: $(System.DefaultWorkingDirectory)\baseAudio.ps1
-   arguments: >
-     -input1 $(numeroFileMP3)
-     -extension $(extensionMP3)
-
-#controllo file .wav
-- task: PowerShell@2
-  inputs:
-   targetType: filePath
-   filePath: $(System.DefaultWorkingDirectory)\baseAudio.ps1
-   arguments: >
-     -input1 $(numeroFileWAV)
-     -extension $(extensionWAV)
+#installazione di steamcmd per la pubblicazione su steam
+- powershell: choco install -y steamcmd
+  displayName: Installare steamcmd
 
