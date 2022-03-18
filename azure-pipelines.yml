@@ -11,7 +11,7 @@ pool:
 
 variables:
   percorsoPreBuild: '../DirectoryPreBuild'
-  numeroFilePNG: 4
+  numeroFilePNG: 3
   extensionPNG: "png"
 
 
@@ -21,7 +21,7 @@ steps:
 - powershell:  |
       new-item base.ps1 -type file -force -value '
       param ($input1, $extension) 
-      $input2 = (Get-ChildItem -path .\DirectoryPreBuild\assets\grafica\*.$extension).count
+      $input2 = (Get-ChildItem -path .$(DirectoryPreBuild)\assets\grafica\*.$extension).count
       if($input1 -ne $input2)
       {
         Write-Error "NOOOOOOO"
