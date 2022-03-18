@@ -13,7 +13,7 @@ variables:
 - name: percorsoPreBuild
   value: '.\DirectoryPreBuild'
 - name: numeroFilePNG
-  value: 3.0
+  value: '3'
 - name: extensionPNG
   value: 'png'
 
