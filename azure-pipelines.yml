@@ -24,11 +24,4 @@ steps:
    parameters:
      percorsoPreBuild: $(percorsoPreBuild)
      
- - task: PowerShell@2
-   inputs:
-    targetType: filePath
-    filePath: $(System.DefaultWorkingDirectory)\baseGrafica.ps1
-    arguments: >
-      -input1 $(numeroFilePNG)
-      -extens $(extensionPNG)
-   displayName: controllo file
+
