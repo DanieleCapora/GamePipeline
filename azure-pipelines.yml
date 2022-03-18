@@ -11,7 +11,7 @@ pool:
 
 variables:
   percorsoPreBuild: '.\DirectoryPreBuild'
-  numeroFilePNG: '3'
+  numeroFilePNG: 3
   extensionPNG: 'png'
 
 
