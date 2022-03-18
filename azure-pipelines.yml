@@ -18,10 +18,10 @@ variables:
 
 
 #controllo file .png
-extends:
- template: checkGrafic.yml
- parameters:
-   percorsoPreBuild: $(percorsoPreBuild)
-   numeroFile: $(numeroFilePNG)
-   extension: $(extensionPNG)
+steps:
+ - template: checkGrafic.yml
+   parameters:
+     percorsoPreBuild: $(percorsoPreBuild)
+     numeroFile: $(numeroFilePNG)
+     extension: $(extensionPNG)
 
