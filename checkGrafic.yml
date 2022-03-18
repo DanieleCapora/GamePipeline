@@ -15,7 +15,7 @@ steps:
       $input2 = (Get-ChildItem -path ${{parameters.percorsoPreBuild}}\assets\grafica\*.$extens).count
       if($input1 -ne $input2)
       {
-        Write-Error "Files with the .$(extens) extension are in a different number from the documentation"
+        Write-Error "Files with the .$extens extension are in a different number from the documentation"
         exit 1
       }'
   displayName: creazione shell program baseGrafica.ps1
