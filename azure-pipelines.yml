@@ -10,12 +10,10 @@ pool:
   vmImage: windows-2019
 
 variables:
-- name: percorsoPreBuild
-  value: '.\DirectoryPreBuild'
-- name: numeroFilePNG
-  value: '3'
-- name: extensionPNG
-  value: 'png'
+  percorsoPreBuild: '.\DirectoryPreBuild'
+  numeroFilePNG: 3
+  extensionPNG: 'png'
+
 
 
 
@@ -25,6 +23,12 @@ steps:
  - template: checkGrafic.yml
    parameters:
      percorsoPreBuild: $(percorsoPreBuild)
-     numeroFile: $(numeroFilePNG)
-     extension: $(extensionPNG)
-
+     
+ - task: PowerShell@2
+   inputs:
+    targetType: filePath
+    filePath: $(System.DefaultWorkingDirectory)\baseGrafica.ps1
+    arguments: >
+      -input1 $(numeroFilePNG)
+      -extens $(extensionPNG)
+   displayName: controllo file
