@@ -25,4 +25,4 @@ steps:
    arguments: >
      -input1 $(numeroFile)
      -extens $(extension)
-  displayName: controllo file .$(extension)
+  displayName: controllo file
