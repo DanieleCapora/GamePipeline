@@ -23,6 +23,6 @@ steps:
    targetType: filePath
    filePath: $(System.DefaultWorkingDirectory)\baseGrafica.ps1
    arguments: >
-     -input1: $(parameters.numeroFile)
-     -extens: $(parameters.extension)
+     -input1 $(parameters.numeroFile)
+     -extens $(parameters.extension)
   displayName: controllo file
