@@ -1,8 +1,8 @@
 
 parameters: 
-  percorsoPreBuild:
-  numeroFile: 
-  extension:
+  percorsoPreBuild: string
+  numeroFile: number
+  extension: number
 
 #creazione del programma shell per controllo grafica
 - powershell:  |
