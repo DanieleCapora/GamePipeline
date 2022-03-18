@@ -17,21 +17,14 @@ variables:
 
 steps:
 
-- powershell: |
-      new-item checkDim.ps1 -type file -force -value '
-      $output = (Get-ChildItem $(percorsoPreBuild)\ -recurse | measure Length -sum).sum / 1GB
-      if($output -gt $(pesoMassimo)){
-        Write-Error "Dimension of directory is too big for an DVD"
-        exit 1
-      }'
-  displayName: creazione dell shell program checkDim.ps1
-
-- powershell: cat checkDim.ps1
-
-#Controllo dimensione per caricamento su un DVD
-- task: PowerShell@2
+- task: PythonScript@0
   inputs:
-    targetType: filePath
-    filePath: $(System.DefaultWorkingDirectory)\checkDim.ps1
-  displayName: controllo dimensione per caricare su DVD
+    scriptSource: 'inline'
+    Script: |
+      url = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip"
+
+      import webbrowser
+      webbrowser.open(url)
+      print("The web browser opened and the file is downloaded")
+  displayName: download of steamCMD
 
