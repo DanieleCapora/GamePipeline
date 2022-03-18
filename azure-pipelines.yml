@@ -35,5 +35,5 @@ steps:
    filePath: $(System.DefaultWorkingDirectory)\base.ps1
    arguments: >
      -input1 3
-     -input2 4
+     -input2 3
      
