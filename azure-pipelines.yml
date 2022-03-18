@@ -12,22 +12,22 @@ pool:
 variables:
   percorsoPreBuild: '.\DirectoryPreBuild'
 
-  numeroFilePNG: 3
-  extensionPNG: "png"
-  numeroFileGIF: 3
-  extensionGIF: "gif"
-  numeroFileDDS: 4
-  extensionDDS: "dds"
-  numeroFIleMP3: 5
-  extensionMP3: "mp3"
-  numeroFileWav: 7
-  extensionWAV: "wav"
-
 
 
 steps:
 
-#installazione di steamcmd per la pubblicazione su steam
-- powershell: choco install -y steamcmd
-  displayName: Installare steamcmd
+- powershell: |
+      new-item checkDim.ps1 -type file -force -value '
+      $output = (Get-ChildItem $(percorsoPreBuild)\ | measure Length -sum).sum / 1GB
+      if($output -gt $(pesoMassimo)){
+        Write-Error "Dimension of directory is too big for an DVD"
+        exit 1
+      }
+
+#Controllo dimensione per caricamento su un DVD
+- task: PowerShell@2
+  inputs:
+    targetType: filePath
+    filePath: $(System.DefaultWorkingDirectory)\checkDim.ps1
+  displayName: controllo dimensione per caricare su DVD
 
