@@ -3,7 +3,7 @@ parameters:
 - name: percorsoPreBuild
   type: string
 - name: numeroFile
-  type: number
+  type: string
 - name: extension
   type: string
 
