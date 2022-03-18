@@ -10,9 +10,12 @@ pool:
   vmImage: windows-2019
 
 variables:
-  percorsoPreBuild: '.\DirectoryPreBuild'
-  numeroFilePNG: 3
-  extensionPNG: 'png'
+- name: percorsoPreBuild
+  value: '.\DirectoryPreBuild'
+- name: numeroFilePNG
+  value: 3
+- name: extensionPNG
+  value: 'png'
 
 
 
