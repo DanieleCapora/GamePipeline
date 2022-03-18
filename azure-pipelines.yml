@@ -18,7 +18,7 @@ steps:
 
 - powershell: |
       new-item checkDim.ps1 -type file -force -value '
-      $output = (Get-ChildItem $(percorsoPreBuild)\ | measure Length -sum).sum / 1GB
+      $output = (Get-ChildItem $(percorsoPreBuild)\ -recurse | measure Length -sum).sum / 1GB
       if($output -gt $(pesoMassimo)){
         Write-Error "Dimension of directory is too big for an DVD"
         exit 1
