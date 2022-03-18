@@ -5,7 +5,7 @@ parameters:
 - name: numeroFile
   type: number
 - name: extension
-  type: number
+  type: string
 
 steps:
 #creazione del programma shell per controllo grafica
