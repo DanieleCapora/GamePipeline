@@ -16,11 +16,21 @@ variables:
 
 steps:
 
-#installazione di Directx
+- powershell:  |
+      new-item base.ps1 -type file -force -value '
+      param ($input1, $input2) 
+      if($input1 -ne $input2)
+      {
+        Write-Error "NOOOOOOO"
+        exit 1
+      }'
+  displayName: crealo cazzo
+
 - task: PowerShell@2
   inputs:
-    targetType: inline
-    script: choco install directx-sdk
-    verbosePreference: continue
-  displayName: installare directx.sdk
-
+   targetType: filePath
+   script: .\base.ps1
+   arguments: >
+     -input1 3
+     -input2 4
+     
