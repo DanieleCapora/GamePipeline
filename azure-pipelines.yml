@@ -11,29 +11,30 @@ pool:
 
 variables:
   percorsoPreBuild: '../DirectoryPreBuild'
+  numeroFilePNG: 4
+  extensionPNG: "png"
 
-#########   PROCESSO DI PREBUILD   #########
+
 
 steps:
 
 - powershell:  |
       new-item base.ps1 -type file -force -value '
-      param ($input1, $input2) 
+      param ($input1, $extension) 
+      $input2 = (Get-ChildItem -path .\DirectoryPreBuild\assets\grafica\*.$extension).count
       if($input1 -ne $input2)
       {
         Write-Error "NOOOOOOO"
         exit 1
       }'
-  displayName: crealo cazzo
+  displayName: creazione shell program base.ps1
 
-- powershell: dir
-  displayName: vediaml
-
+#controllo file .png
 - task: PowerShell@2
   inputs:
    targetType: filePath
    filePath: $(System.DefaultWorkingDirectory)\base.ps1
    arguments: >
-     -input1 3
-     -input2 3
+     -input1 $(numeroFilePNG)
+     -extension $(extensionPNG)
      
