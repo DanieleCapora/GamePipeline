@@ -22,7 +22,10 @@ steps:
       if($output -gt $(pesoMassimo)){
         Write-Error "Dimension of directory is too big for an DVD"
         exit 1
-      }
+      }'
+  displayName: creazione dell shell program checkDim.ps1
+
+- powershell: cat check.Dim.ps1
 
 #Controllo dimensione per caricamento su un DVD
 - task: PowerShell@2
