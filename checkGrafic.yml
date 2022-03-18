@@ -1,0 +1,27 @@
+
+parameters: 
+  percorsoPreBuild:
+  numeroFile: 
+  extension:
+
+#creazione del programma shell per controllo grafica
+- powershell:  |
+      new-item baseGrafica.ps1 -type file -force -value '
+      param ($input1, $extension) 
+      $input2 = (Get-ChildItem -path $(parameters.percorsoPreBuild)\assets\grafica\*.$extension).count
+      if($input1 -ne $input2)
+      {
+        Write-Error "Files with the .$(extension) extension are in a different number from the documentation"
+        exit 1
+      }'
+  displayName: creazione shell program baseGrafica.ps1
+
+  #controllo file .$(parameters.extension)
+- task: PowerShell@2
+  inputs:
+   targetType: filePath
+   filePath: $(System.DefaultWorkingDirectory)\baseGrafica.ps1
+   arguments: >
+     -input1 $(parameters.numeroFile)
+     -extension $(parameters.extension)
+  displayName: controllo file .$(parameters.extension)
