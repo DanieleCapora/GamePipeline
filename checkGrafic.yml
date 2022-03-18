@@ -12,7 +12,7 @@ steps:
 - powershell:  |
       new-item baseGrafica.ps1 -type file -force -value '
       param ($input1, $extens) 
-      $input2 = (Get-ChildItem -path ${parameters.percorsoPreBuild}\assets\grafica\*.$extens).count
+      $input2 = (Get-ChildItem -path ${{parameters.percorsoPreBuild}}\assets\grafica\*.$extens).count
       if($input1 -ne $input2)
       {
         Write-Error "Files with the .$(extens) extension are in a different number from the documentation"
