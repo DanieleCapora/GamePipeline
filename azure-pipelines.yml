@@ -22,8 +22,4 @@ steps:
  - template: checkGrafic.yml
    parameters:
      percorsoPreBuild: $(percorsoPreBuild)
-     numeroFile: $(numeroFilePNG)
-     extension: $(extensionPNG)
-
- - powershell: cat checkGrap.ps1
 
