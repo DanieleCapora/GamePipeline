@@ -11,7 +11,8 @@ pool:
 
 variables:
   percorsoPreBuild: '.\DirectoryPreBuild'
-  pesoMassimo: 17.08
+  numeroFilePNG: 3
+  extensionPNG: 'png'
 
 
 
