@@ -11,6 +11,7 @@ pool:
 
 variables:
   percorsoPreBuild: '.\DirectoryPreBuild'
+  pesoMassimo: 17.08
 
 
 
