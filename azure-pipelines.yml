@@ -10,7 +10,7 @@ pool:
   vmImage: windows-2019
 
 variables:
-  percorsoPreBuild: '../DirectoryPreBuild'
+  percorsoPreBuild: '..\DirectoryPreBuild'
   numeroFilePNG: 3
   extensionPNG: "png"
 
@@ -21,7 +21,7 @@ steps:
 - powershell:  |
       new-item base.ps1 -type file -force -value '
       param ($input1, $extension) 
-      $input2 = (Get-ChildItem -path .\DirectoryPreBuild\assets\grafica\*.$extension).count
+      $input2 = (Get-ChildItem -path $(percorsoPreBuild)\assets\grafica\*.$extension).count
       if($input1 -ne $input2)
       {
         Write-Error "NOOOOOOO"
