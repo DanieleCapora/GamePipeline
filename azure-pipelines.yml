@@ -21,20 +21,4 @@ variables:
 
 steps:
 
-#download del file .ps1 per l'implementazione della funzione in powershell
-- powershell: Invoke-WebRequest -Uri "https://raw.githubusercontent.com/wikijm/PowerShell-AdminScripts/master/Miscellaneous/New-IsoFile.ps1" -OutFile "$(System.DefaultWorkingDirectory)\New-IsoFile.ps1"
-  displayName: download funione per creare iso in powershell
-
-#implementazione della funziona
-- task: PowerShell@2
-  inputs:
-    targetType: inline
-    script: $(System.DefaultWorkingDirectory)\New-IsoFile.ps1 ; New-Isofile $(percorsoPostBuild) -path $(System.DefaultWorkingDirectory)\DirectoryISO\Game.iso -Title "A fantastic game"
-    pwsh: true
-  
-#- powershell: $(System.DefaultWorkingDirectory)\New-IsoFile.ps1
-#  displayName: implementazione della funzione per ISO
-
-#creazione dell'ISO
-#- powershell: New-Isofile $(percorsoPostBuild) -path $(System.DefaultWorkingDirectory)\DirectoryISO\Game.iso -Title "A fantastic game"
-#  displayName: creazione dell'ISO
+- powershell: choco install poweriso
