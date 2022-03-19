@@ -1,16 +1,27 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
 - '*'
 
 pool:
-  vmImage: windows-2019
+  vmImage: windows-latest
+  demands:
+  - directx
+  - steamworks
+  - msbuild
+  - visualstudio
 
+#Dichiarazione delle variabili utilizzate nella pipeline
 variables:
   percorsoPreBuild: '.\DirectoryPreBuild'
+  percorsoPostBuild: '.\DirectoryPostBuild'
+
+  buildConfiguration: 'Release'
+  percorsoFileISO: '**/percorsoFileISO'
+  
   numeroFilePNG: '3'
   extensionPNG: "png"
   numeroFileGIF: '6'
@@ -22,8 +33,67 @@ variables:
   numeroFileWAV: '7'
   extensionWAV: "wav"
 
+  account_name_steam: pinuzzo
+  password_steam: "123456798"
+
+  percorsoReleaseSteam: '**/release/steam'
+  percorsoReleaseIso: '**/release/dvd'
+  pesoMassimo: 17.08
+
+  postTypeIG: post
+  tagsPostIG: ''
+  placePostIG: ''
+
+  playlistVideoYT: samplePlaylist1
+  familyFriendlyYT: true
+
+
+#########   PROCESSO DI PREBUILD   #########
 
 steps:
+#installazione .NET
+- task: UseDotNet@2
+  displayName: Use .NET SDK 5.x
+  inputs:
+    packageType: sdk
+    version: 5.x
+
+#aggiunta VSBuild
+- task: VSBuild@1
+  inputs:
+    solution: '**\*.sln' 
+    vsVersion: 'latest'
+    platform: 'x64'
+    configuration: '$(buildConfiguration)'
+    msbuildArchitecture: 'x64'
+    logProjectEvents: true
+    createLogFile: false
+    logFileVerbosity: 'diagnostic'
+
+#installazione di Directx
+- task: PowerShell@2
+  inputs:
+    targetType: inline
+    script: choco install directx-sdk
+    verbosePreference: stop
+  displayName: installare directx.sdk
+
+- task: DotNetCoreCLI@2
+  displayName: Build the project - Release
+  inputs:
+    command: build
+    arguments: --no-restore --configuration Release --output "$(percorsoPostBuild)"
+    projects: '$(percorsoPreBuild)'
+
+#########   PROCESSO DI BUILD   #########
+# build del gioco
+- script: dotnet build --configuration $(buildConfiguration) --input $(percorsoPreBuild) --output $(percorsoPostBuild)
+  displayName: dotnet build $(buildConfiguration)
+  executionGroup: 1
+
+
+#########   PROCESSO DI CONSISTENZA   #########
+
 #controllo file .png
 - template: checkGrafic.yml
   parameters:
@@ -59,3 +129,82 @@ steps:
     numeroFile: $(numeroFileWAV)
     extension: $(extensionWAV)
 
+
+##########   FASE DI DEPLOY   #########
+
+#Pubblicazione su steam
+#creazione del programma shell per controllo dimensione
+- powershell: |
+      new-item checkDim.ps1 -type file -force -value '
+      $output = (Get-ChildItem $(percorsoPreBuild)\ -recurse | measure Length -sum).sum / 1GB
+      if($output -gt $(pesoMassimo)){
+        Write-Error "Dimension of directory is too big for an DVD"
+        exit 1
+      }'
+  displayName: creazione dell shell program checkDim.ps1
+
+#Controllo dimensione per caricamento su un DVD
+- task: PowerShell@2
+  inputs:
+    targetType: filePath
+    filePath: $(System.DefaultWorkingDirectory)\checkDim.ps1
+  displayName: controllo dimensione per caricare su DVD
+
+#installazione di steamcmd per la pubblicazione su steam
+- powershell: choco install -y steamcmd
+  displayName: Installare steamcmd
+
+#creo tramite script il file di configurazione configGame.vdf e lo inserisco nella cartella home/gamedirectory/ che servirà per steamCMD
+powershell: |
+    new-item configSteamGame.vdf -type file -force -value '
+    "AppBuild"
+    {
+      "AppID" "1000" // your AppID
+      "Desc" "a build script for a game" // internal description for this build
+
+      "ContentRoot" $(percorsoPostBuild)\ // root content folder, relative to location of this file
+      "BuildOutput" .\logs\ // build output folder for build logs and build cache files
+
+      "Depots"
+      {
+        "1001" // your DepotID
+        {
+          "FileMapping"
+          {
+            "LocalPath" "*" // all files from contentroot folder
+            "DepotPath" "." // mapped into the root of the depot
+            "recursive" "1" // include all subfolders
+          }
+        }
+      }
+    }'
+displayName: Creare il file di configurazione
+executionGroup: 2
+
+#caricare il gioco
+- script: tools\ContentBuilder\builder\steamcmd.exe + login <"$(account_name_steam)"> <"$(password_steam)"> + run_app_build $(percorsoPreBuild)/configGame.vdf + quit
+  displaName: carico il gioco
+  executionGroup: 3
+
+
+#Creazione artefatto ISO
+#script che prende tutto quello che c'è nella directory $(percorsoPreBuild) e lo mette in una ISO che chiama game.iso
+- script: mkisofs -o game.iso $(percorsoPreBuild)  # --> mkisofs -o [nomefile.iso] [percorso_directory]
+  displayName: Trasformazione del progetto in un artefatto .iso
+  executionGroup: 3
+
+
+##########   FASE DI PUBBLICAZIONE AD   ##########
+
+#punto 6: Pubblicazione video yt/ immagini su social media (da fare in parallelo con il punto 2)
+- task: PubblicazioneTrailerVideo@1
+  displayName: pubblicazione Trailer
+  inputs:
+    arguments: -credenziali '$(percorsoFile)'/MaterialePubblicitario/credenzialiYT.txt -video '$(percorsoFile)'/MaterialePubblicitario/VideoYT.mp4 -titolo '$(percorsoFile)'/MaterialePubblicitario/titolo.txt -descrizione '$(percorsoFile)'/MaterialePubblicitario/descrizioneVideo.txt -playlist '$(playlistVideoYT)' -familyFriendly '$(familyFriendlyYT)'
+  executionGroup: 1
+
+- task: PubblicazionePostInstagram@1
+  displayName: pubblicazione Post
+  inputs:
+    arguments: -credenziali '$(percorsoFile)'/MaterialePubblicitario/credenzialiIG.txt -immagine '$(percorsoFile)'/MaterialePubblicitario/img.png -postType '$(postTypeIG)' -descrizione '$(percorsoFile)'/MaterialePubblicitario/descrizionePost.txt -tags $(tagsPostIG) -place $(placePostIG)
+  executionGroup: 1
