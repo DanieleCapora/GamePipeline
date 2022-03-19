@@ -13,7 +13,7 @@ variables:
   percorsoPreBuild: '.\DirectoryPreBuild'
   numeroFilePNG: '3'
   extensionPNG: "png"
-  numeroFileGIF: '3'
+  numeroFileGIF: '6'
   extensionGIF: "gif"
   numeroFileDDS: '4'
   extensionDDS: "dds"
