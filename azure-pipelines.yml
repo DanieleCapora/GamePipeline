@@ -89,7 +89,6 @@ steps:
 # build del gioco
 - script: dotnet build --configuration $(buildConfiguration) --input $(percorsoPreBuild) --output $(percorsoPostBuild)
   displayName: dotnet build $(buildConfiguration)
-  executionGroup: 1
 
 
 #########   PROCESSO DI CONSISTENZA   #########
