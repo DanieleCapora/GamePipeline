@@ -10,7 +10,7 @@ parameters:
 steps:
 #creazione del programma shell per controllo musica
 - powershell:  |
-      new-item ${{extension}}.ps1 -type file -force -value '
+      new-item OK.ps1 -type file -force -value '
       param ($input1, $extens) 
       $input2 = (Get-ChildItem -path ${{parameters.percorsoPreBuild}}\assets\audio\*.$extens).count
       if($input1 -ne $input2)
@@ -23,7 +23,7 @@ steps:
 - task: PowerShell@2
   inputs:
    targetType: filePath
-   filePath: $(System.DefaultWorkingDirectory)\${{extension}}.ps1
+   filePath: $(System.DefaultWorkingDirectory)\OK.ps1
    arguments: >
      -input1 ${{parameters.numeroFile}}
      -extens ${{parameters.extension}}
