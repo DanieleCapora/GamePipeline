@@ -44,5 +44,18 @@ steps:
     percorsoPreBuild: $(percorsoPreBuild)
     numeroFile: $(numeroFileDDS)
     extension: $(extensionDDS)
-     
+
+#controllo file .mp3
+- template: checkAudio.yml
+  parameters:
+    percorsoPreBuild: $(percorsoPreBuild)
+    numeroFile: $(numeroFileMP3)
+    extension: $(extensionMP3)
+
+#controllo file .wav
+- template: checkAudio.yml
+  parameters:
+    percorsoPreBuild: $(percorsoPreBuild)
+    numeroFile: $(numeroFileWAV)
+    extension: $(extensionWAV)
 
