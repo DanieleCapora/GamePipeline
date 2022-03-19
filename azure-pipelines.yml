@@ -22,3 +22,5 @@ variables:
 steps:
 
 - powershell: choco install poweriso
+
+- powershell: ls
