@@ -21,6 +21,23 @@ variables:
 
 steps:
 
+#script per il download del runtime di DirectX per l'inserimento nel file ISO
+- powershell: Invoke-WebRequest -Uri "https://www.microsoft.com/it-IT/download/confirmation.aspx?id=35" -OutFile "$(PercorsoPostBuild)\dxwebsetup.exe"
+  displayName: download Directx runtime
+
+- powershell: cd $(PercorsoPostBuild) ; ls
+
+#Creazione artefatto ISO
+
+#download powerISO da choco
 - powershell: choco install poweriso
+  displayName: installazione di powerISO
+
+- powershell: cd $(PercorsoPostBuild) ; ls
+
+#script che prende tutto quello che c'è nella directory $(percorsoPostBuild) e lo mette in una ISO che chiama game.iso
+- script: '"c:\Program Files\PowerISO\piso.exe" create -o $(System.DefaultWorkingDirectory)\DirectoryISO\game.iso -add $(percorsoPostBuild) /'
+  displayName: Trasformazione del progetto in un artefatto .iso
 
 - powershell: ls
+  
