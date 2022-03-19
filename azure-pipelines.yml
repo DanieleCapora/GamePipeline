@@ -30,7 +30,7 @@ steps:
   inputs:
     targetType: inline
     script: $(System.DefaultWorkingDirectory)\New-IsoFile.ps1 ; New-Isofile $(percorsoPostBuild) -path $(System.DefaultWorkingDirectory)\DirectoryISO\Game.iso -Title "A fantastic game"
-    
+    pwsh: true
   
 #- powershell: $(System.DefaultWorkingDirectory)\New-IsoFile.ps1
 #  displayName: implementazione della funzione per ISO
