@@ -17,9 +17,9 @@ variables:
   extensionGIF: "gif"
   numeroFileDDS: '4'
   extensionDDS: "dds"
-  numeroFIleMP3: '5'
+  numeroFileMP3: '5'
   extensionMP3: "mp3"
-  numeroFileWav: '7'
+  numeroFileWAV: '7'
   extensionWAV: "wav"
 
 
