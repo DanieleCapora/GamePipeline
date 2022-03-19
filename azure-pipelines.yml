@@ -155,7 +155,7 @@ steps:
   displayName: Installare steamcmd
 
 #creo tramite script il file di configurazione configGame.vdf e lo inserisco nella cartella home/gamedirectory/ che servirà per steamCMD
-powershell: |
+- powershell: |
     new-item configSteamGame.vdf -type file -force -value '
     "AppBuild"
     {
@@ -178,33 +178,6 @@ powershell: |
         }
       }
     }'
-displayName: Creare il file di configurazione
-executionGroup: 2
-
-#caricare il gioco
-- script: tools\ContentBuilder\builder\steamcmd.exe + login <"$(account_name_steam)"> <"$(password_steam)"> + run_app_build $(percorsoPreBuild)/configGame.vdf + quit
-  displaName: carico il gioco
-  executionGroup: 3
+  displayName: Creare il file di configurazione
 
 
-#Creazione artefatto ISO
-#script che prende tutto quello che c'è nella directory $(percorsoPreBuild) e lo mette in una ISO che chiama game.iso
-- script: mkisofs -o game.iso $(percorsoPreBuild)  # --> mkisofs -o [nomefile.iso] [percorso_directory]
-  displayName: Trasformazione del progetto in un artefatto .iso
-  executionGroup: 3
-
-
-##########   FASE DI PUBBLICAZIONE AD   ##########
-
-#punto 6: Pubblicazione video yt/ immagini su social media (da fare in parallelo con il punto 2)
-- task: PubblicazioneTrailerVideo@1
-  displayName: pubblicazione Trailer
-  inputs:
-    arguments: -credenziali '$(percorsoFile)'/MaterialePubblicitario/credenzialiYT.txt -video '$(percorsoFile)'/MaterialePubblicitario/VideoYT.mp4 -titolo '$(percorsoFile)'/MaterialePubblicitario/titolo.txt -descrizione '$(percorsoFile)'/MaterialePubblicitario/descrizioneVideo.txt -playlist '$(playlistVideoYT)' -familyFriendly '$(familyFriendlyYT)'
-  executionGroup: 1
-
-- task: PubblicazionePostInstagram@1
-  displayName: pubblicazione Post
-  inputs:
-    arguments: -credenziali '$(percorsoFile)'/MaterialePubblicitario/credenzialiIG.txt -immagine '$(percorsoFile)'/MaterialePubblicitario/img.png -postType '$(postTypeIG)' -descrizione '$(percorsoFile)'/MaterialePubblicitario/descrizionePost.txt -tags $(tagsPostIG) -place $(placePostIG)
-  executionGroup: 1
