@@ -26,12 +26,11 @@ steps:
   displayName: download funione per creare iso in powershell
 
 #implementazione della funziona
-- task: AzurePowerShell@5
+- task: PowerShell@2
   inputs:
-    azureSubscription: prova
-    scriptType: inlineScript
-    inline: $(System.DefaultWorkingDirectory)\New-IsoFile.ps1 ; New-Isofile $(percorsoPostBuild) -path $(System.DefaultWorkingDirectory)\DirectoryISO\Game.iso -Title "A fantastic game"
-    azurePowerShellVersion: latestVersion
+    targetType: inline
+    script: $(System.DefaultWorkingDirectory)\New-IsoFile.ps1 ; New-Isofile $(percorsoPostBuild) -path $(System.DefaultWorkingDirectory)\DirectoryISO\Game.iso -Title "A fantastic game"
+    
   
 #- powershell: $(System.DefaultWorkingDirectory)\New-IsoFile.ps1
 #  displayName: implementazione della funzione per ISO
