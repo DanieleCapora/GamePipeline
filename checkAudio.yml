@@ -10,7 +10,7 @@ parameters:
 steps:
 #creazione del programma shell per controllo musica
 - powershell:  |
-      new-item OK.ps1 -type file -force -value '
+      new-item ${{prameters.etension}}.ps1 -type file -force -value '
       param ($input1, $extens) 
       $input2 = (Get-ChildItem -path ${{parameters.percorsoPreBuild}}\assets\audio\*.$extens).count
       if($input1 -ne $input2)
@@ -18,13 +18,13 @@ steps:
         Write-Error "Files with the .$extens extension are in a different number from the documentation"
         exit 1
       }'
-  displayName: creazione shell program OK.ps1
+  displayName: creazione shell program ${{prameters.etension}}.ps1
 
 - task: PowerShell@2
   inputs:
    targetType: filePath
-   filePath: $(System.DefaultWorkingDirectory)\OK.ps1
+   filePath: $(System.DefaultWorkingDirectory)\${{prameters.etension}}.ps1
    arguments: >
      -input1 ${{parameters.numeroFile}}
      -extens ${{parameters.extension}}
-  displayName: controllo file OK
+  displayName: controllo file ${{prameters.etension}}
