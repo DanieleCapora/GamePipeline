@@ -56,18 +56,6 @@ steps:
     packageType: sdk
     version: 5.x
 
-#aggiunta VSBuild
-- task: VSBuild@1
-  inputs:
-    solution: '**\*.sln' 
-    vsVersion: 'latest'
-    platform: 'x64'
-    configuration: '$(buildConfiguration)'
-    msbuildArchitecture: 'x64'
-    logProjectEvents: true
-    createLogFile: false
-    logFileVerbosity: 'diagnostic'
-
 #installazione di Directx
 - task: PowerShell@2
   inputs:
@@ -82,11 +70,6 @@ steps:
     command: build
     arguments: --no-restore --configuration Release --output "$(percorsoPostBuild)"
     projects: '$(percorsoPreBuild)'
-
-#########   PROCESSO DI BUILD   #########
-# build del gioco
-- script: dotnet build --configuration $(buildConfiguration) --input $(percorsoPreBuild) --output $(percorsoPostBuild)
-  displayName: dotnet build $(buildConfiguration)
 
 
 #########   PROCESSO DI CONSISTENZA   #########
