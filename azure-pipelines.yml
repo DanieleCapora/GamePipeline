@@ -17,147 +17,18 @@ variables:
   percorsoPreBuild: '.\DirectoryPreBuild'
   percorsoPostBuild: '.\DirectoryPostBuild'
 
-  buildConfiguration: 'Release'
-  percorsoFileISO: '**/percorsoFileISO'
-  
-  numeroFilePNG: '3'
-  extensionPNG: "png"
-  numeroFileGIF: '6'
-  extensionGIF: "gif"
-  numeroFileDDS: '4'
-  extensionDDS: "dds"
-  numeroFileMP3: '5'
-  extensionMP3: "mp3"
-  numeroFileWAV: '7'
-  extensionWAV: "wav"
 
-  account_name_steam: pinuzzo
-  password_steam: "123456798"
-
-  percorsoReleaseSteam: '**/release/steam'
-  percorsoReleaseIso: '**/release/dvd'
-  pesoMassimo: 17.08
-
-  postTypeIG: post
-  tagsPostIG: ''
-  placePostIG: ''
-
-  playlistVideoYT: samplePlaylist1
-  familyFriendlyYT: true
-
-
-#########   PROCESSO DI PREBUILD   #########
 
 steps:
-#installazione .NET
-- task: UseDotNet@2
-  displayName: Use .NET SDK 5.x
-  inputs:
-    packageType: sdk
-    version: 5.x
 
-#installazione di Directx
-- task: PowerShell@2
-  inputs:
-    targetType: inline
-    script: choco install directx-sdk
-    verbosePreference: stop
-  displayName: installare directx.sdk
+#download del file .ps1 per l'implementazione della funzione in powershell
+- powershell: Invoke-WebRequest -Uri "https://raw.githubusercontent.com/wikijm/PowerShell-AdminScripts/master/Miscellaneous/New-IsoFile.ps1" -OutFile "$(System.DefaultWorkingDirectory)\New-IsoFile.ps1"
+  displayName: download funione per creare iso in powershell
 
-- task: DotNetCoreCLI@2
-  displayName: Build the project - Release
-  inputs:
-    command: build
-    arguments: --no-restore --configuration Release --output "$(percorsoPostBuild)"
-    projects: '$(percorsoPreBuild)'
+#implementazione della funziona
+- powershell: $(System.DefaultWorkingDirectory)\New-IsoFile.ps1
+  displayName: implementazione della funzione per ISO
 
-
-#########   PROCESSO DI CONSISTENZA   #########
-
-#controllo file .png
-- template: checkGrafic.yml
-  parameters:
-    percorsoPreBuild: $(percorsoPreBuild)
-    numeroFile: $(numeroFilePNG)
-    extension: $(extensionPNG)
-
-#controllo file .gif
-- template: checkGrafic.yml
-  parameters:
-    percorsoPreBuild: $(percorsoPreBuild)
-    numeroFile: $(numeroFileGIF)
-    extension: $(extensionGIF)
-
-#controllo file .dds
-- template: checkGrafic.yml
-  parameters:
-    percorsoPreBuild: $(percorsoPreBuild)
-    numeroFile: $(numeroFileDDS)
-    extension: $(extensionDDS)
-
-#controllo file .mp3
-- template: checkAudio.yml
-  parameters:
-    percorsoPreBuild: $(percorsoPreBuild)
-    numeroFile: $(numeroFileMP3)
-    extension: $(extensionMP3)
-
-#controllo file .wav
-- template: checkAudio.yml
-  parameters:
-    percorsoPreBuild: $(percorsoPreBuild)
-    numeroFile: $(numeroFileWAV)
-    extension: $(extensionWAV)
-
-
-##########   FASE DI DEPLOY   #########
-
-#Pubblicazione su steam
-#creazione del programma shell per controllo dimensione
-- powershell: |
-      new-item checkDim.ps1 -type file -force -value '
-      $output = (Get-ChildItem $(percorsoPreBuild)\ -recurse | measure Length -sum).sum / 1GB
-      if($output -gt $(pesoMassimo)){
-        Write-Error "Dimension of directory is too big for an DVD"
-        exit 1
-      }'
-  displayName: creazione dell shell program checkDim.ps1
-
-#Controllo dimensione per caricamento su un DVD
-- task: PowerShell@2
-  inputs:
-    targetType: filePath
-    filePath: $(System.DefaultWorkingDirectory)\checkDim.ps1
-  displayName: controllo dimensione per caricare su DVD
-
-#installazione di steamcmd per la pubblicazione su steam
-- powershell: choco install -y steamcmd
-  displayName: Installare steamcmd
-
-#creo tramite script il file di configurazione configGame.vdf e lo inserisco nella cartella home/gamedirectory/ che servirà per steamCMD
-- powershell: |
-    new-item configSteamGame.vdf -type file -force -value '
-    "AppBuild"
-    {
-      "AppID" "1000" // your AppID
-      "Desc" "a build script for a game" // internal description for this build
-
-      "ContentRoot" $(percorsoPostBuild)\ // root content folder, relative to location of this file
-      "BuildOutput" .\logs\ // build output folder for build logs and build cache files
-
-      "Depots"
-      {
-        "1001" // your DepotID
-        {
-          "FileMapping"
-          {
-            "LocalPath" "*" // all files from contentroot folder
-            "DepotPath" "." // mapped into the root of the depot
-            "recursive" "1" // include all subfolders
-          }
-        }
-      }
-    }'
-  displayName: Creare il file di configurazione
-
-
+#creazione dell'ISO
+- powershell: New-Isofile $(percorsoPostBuild) -path $(System.DefaultWorkingDirectory)\DirectoryISO\Game.iso -Title "A fantastic game"
+  displayName: creazione dell'ISO
