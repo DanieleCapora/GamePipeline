@@ -36,7 +36,7 @@ steps:
 - powershell: cd $(PercorsoPostBuild) ; ls
 
 #script che prende tutto quello che c'è nella directory $(percorsoPostBuild) e lo mette in una ISO che chiama game.iso
-- script: '"c:\Program Files\PowerISO\piso.exe" create -o $(System.DefaultWorkingDirectory)\DirectoryISO\game.iso -add $(percorsoPostBuild) /'
+- script: '"c:\Program Files\PowerISO\piso.exe" create -o $(System.DefaultWorkingDirectory)\game.iso -add $(percorsoPostBuild) /'
   displayName: Trasformazione del progetto in un artefatto .iso
 
 - powershell: ls
