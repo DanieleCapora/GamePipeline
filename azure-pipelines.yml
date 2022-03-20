@@ -44,12 +44,13 @@ variables:
 #########   PROCESSO DI PREBUILD   #########
 steps:
 #download di steamworks_sdk per la pubblicazione su steam
-- powershell: New-Item -Path "${(System.DefaultWorkingDirectory)}\steamworks_sdk" -force
+- powershell: Invoke-WebRequest -Uri "https://partner.steamgames.com/downloads/steamworks_sdk_153a.zip" -OutFile ( New-Item -Path "$(System.DefaultWorkingDirectory)\steamworks_sdk\steamworks_sdk_153a.zip" -Force )
+  displayName: Download steamworks_sdk
 
 #unzip steamworks_skd
 - task: ExtractFiles@1
   inputs:
-    archiveFilePatterns: $(System.DefaultWorkingDirectory)\steamworks_sdk\
+    archiveFilePatterns: $(System.DefaultWorkingDirectory)\steamworks_sdk\steamworks_sdk_153a.zip
     destinationFolder: $(System.DefaultWorkingDirectory)\steamworks_sdk\
 
 #copio i file del gioco in steamworks_sdk
