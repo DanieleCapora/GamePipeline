@@ -44,7 +44,7 @@ variables:
 #########   PROCESSO DI PREBUILD   #########
 steps:
 #download di steamworks_sdk per la pubblicazione su steam
-- powershell: New-Item -Path "$(System.DefaultWorkingDirectory)\steamworks_sdk -force
+- powershell: New-Item -Path "${(System.DefaultWorkingDirectory)}\steamworks_sdk" -force
 
 #unzip steamworks_skd
 - task: ExtractFiles@1
