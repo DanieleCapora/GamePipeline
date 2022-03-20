@@ -104,6 +104,8 @@ steps:
     }'
   displayName: creo script App Build per steamworks_sdk
 
+- powershell: eco $(System.DefaultWorkingDirectory)\steamsdk\sdk\tools\ContentBuilder\scripts\app_build_1946.vdf
+
 #creo secondo script per steamworks_sdk
 - powershell: |
     new-item $(System.DefaultWorkingDirectory)\steamsdk\sdk\tools\ContentBuilder\scripts\depot_build_19461.vdf -type file -force -value '
@@ -131,3 +133,5 @@ steps:
       }
     }'
   displayName: creo script DeportBild per steamworks_sdk
+
+- powershell: eco $(System.DefaultWorkingDirectory)\steamsdk\sdk\tools\ContentBuilder\scripts\depot_build_19461.vdf
