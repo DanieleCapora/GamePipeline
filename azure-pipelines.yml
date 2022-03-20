@@ -173,7 +173,7 @@ steps:
 
 #creo primo script per steamworks_sdk
 - powershell: |
-    new-item $(System.DefaultWorkingDirectory)\steamsdk\steamworks_sdk_153a\sdk\tools\ContentBuilder\scripts\app_build_1946.vdf -type file -force -value '
+    new-item "$(System.DefaultWorkingDirectory)\steamsdk\steamworks_sdk_153a\sdk\tools\ContentBuilder\scripts\app_build_1946.vdf" -type file -force -value '
     "AppBuild"
     {
       "AppID" "1946" // Your AppID
