@@ -178,7 +178,7 @@ steps:
     {
       "AppID" "1946" // Your AppID
       "Desc" "Game of the YEAR" // internal description for this build
-      "Preview" "1" // 0: nothing preview 1: make this a preview build only, nothing is uploaded
+      "Preview" "1" // 0 nothing preview, 1 make this a preview build only, nothing is uploaded
       "Local" "" // put content on local content server instead of uploading to Steam
       "SetLive" "AlphaTest" // set this build live on beta branch AlphaTest
       "ContentRoot" "${{System.DefaultWorkingDirectory}}\steamsdk\steamworks_sdk_153a\sdk\tools\ContentBuilder\content" // content root folder relative to this script file
