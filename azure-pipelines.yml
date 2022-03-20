@@ -44,10 +44,7 @@ variables:
 #########   PROCESSO DI PREBUILD   #########
 steps:
 #download di steamworks_sdk per la pubblicazione su steam
-- powershell: Invoke-WebRequest -Uri "https://partner.steamgames.com/downloads/steamworks_sdk_153a.zip" -OutFile ( New-Item -Path "$(System.DefaultWorkingDirectory)\steamworks_sdk\steamworks_sdk_153a.zip" -Force )
-  displayName: Download steamworks_sdk
-
-- powershell: ls $(System.DefaultWorkingDirectory)\steamworks_sdk\
+- powershell: New-Item -Path "$(System.DefaultWorkingDirectory)\steamworks_sdk -force
 
 #unzip steamworks_skd
 - task: ExtractFiles@1
@@ -55,15 +52,10 @@ steps:
     archiveFilePatterns: $(System.DefaultWorkingDirectory)\steamworks_sdk\
     destinationFolder: $(System.DefaultWorkingDirectory)\steamworks_sdk\
 
-
-- powershell: ls $(System.DefaultWorkingDirectory)\steamworks_sdk\
-
-#copio i file del gioco in steam
+#copio i file del gioco in steamworks_sdk
 - task: CopyFiles@2
   inputs:
     sourceFolder: $(percorsoPostBuild)
     contents: '**' 
     targetFolder: $(System.DefaultWorkingDirectory)\steamworks_sdk\steamworks_sdk_153a\sdk\tools\ContentBuilder\content
     cleanTargetFolder: true
-
-- powershell: ls $(System.DefaultWorkingDirectory)\steamworks_sdk\steamworks_sdk_153a\sdk\tools\ContentBuilder\content
