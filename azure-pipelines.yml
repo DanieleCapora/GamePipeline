@@ -221,8 +221,8 @@ steps:
   displayName: creo script DeportBild per steamworks_sdk
 
 #caricare il gioco
-- script: '$(System.DefaultWorkingDirectory)\steamsdk\steamworks_sdk_153a\sdk\tools\ContentBuilder\builder\steamcmd.exe +login "$(account_name_steam)" "$(password_steam)" +run_app_build $(System.DefaultWorkingDirectory)\steamsdk\steamworks_sdk_153a\sdk\tools\ContentBuilder\scripts\app_build_1946.vdf +quit'
-  displayName: carico il gioco su steam
+#- script: '$(System.DefaultWorkingDirectory)\steamsdk\steamworks_sdk_153a\sdk\tools\ContentBuilder\builder\steamcmd.exe +login "$(account_name_steam)" "$(password_steam)" +run_app_build $(System.DefaultWorkingDirectory)\steamsdk\steamworks_sdk_153a\sdk\tools\ContentBuilder\scripts\app_build_1946.vdf +quit'
+#  displayName: carico il gioco su steam
 
   #script per il download del runtime di DirectX per l'inserimento nel file ISO
 - powershell: Invoke-WebRequest -Uri "https://www.microsoft.com/it-IT/download/confirmation.aspx?id=35" -OutFile "$(PercorsoPostBuild)\dxwebsetup.exe"
