@@ -61,17 +61,18 @@ steps:
     cleanDestinationFolder: false
 
 - powershell: ls $(System.DefaultWorkingDirectory)\steamsdk\
+- powershell: ls $(System.DefaultWorkingDirectory)\steamsdk\sdk\
 
 #copio i file del gioco in steamworks_sdk
 - task: CopyFiles@2
   inputs:
     sourceFolder: $(percorsoPostBuild)
     contents: '**' 
-    targetFolder: $(System.DefaultWorkingDirectory)\steamsdk\steamworks_sdk_153a\sdk\tools\ContentBuilder\content
+    targetFolder: $(System.DefaultWorkingDirectory)\steamsdk\sdk\tools\ContentBuilder\content
     cleanTargetFolder: true
 
-- powershell: ls $(System.DefaultWorkingDirectory)\steamsdk\steamworks_sdk_153a\sdk\tools\ContentBuilder\content
-- powershell: ls $(System.DefaultWorkingDirectory)\steamsdk\steamworks_sdk_153a\sdk\tools\ContentBuilder\scripts\
+- powershell: ls $(System.DefaultWorkingDirectory)\steamsdk\sdk\tools\ContentBuilder\content
+- powershell: ls $(System.DefaultWorkingDirectory)\steamsdk\sdk\tools\ContentBuilder\scripts\
 
 #pulire la directory prima di immettere gli script
 - task: DeleteFiles@1
