@@ -9,8 +9,11 @@ trigger:
 pool:
   vmImage: windows-2019
   demands:
+#  - directx
+#  - steamworks
   - msbuild
   - visualstudio
+#  - powerISO
 
 #Dichiarazione delle variabili utilizzate nella pipeline
 variables:
@@ -46,12 +49,112 @@ variables:
 #########   PROCESSO DI PREBUILD   #########
 
 steps:
+#installazione .NET
+- task: UseDotNet@2
+  displayName: Use .NET SDK 5.x
+  inputs:
+    packageType: sdk
+    version: 5.x
+
+#aggiunta VSBuild
+#- task: VSBuild@1
+#  inputs:
+#    solution: '**\*.sln' 
+#    vsVersion: 'latest'
+#    platform: 'x64'
+#    configuration: '$(buildConfiguration)'
+#    msbuildArchitecture: 'x64'
+#    logProjectEvents: true
+#    createLogFile: false
+#    logFileVerbosity: 'diagnostic'
+
+#installazione di Directx
+- task: PowerShell@2
+  inputs:
+    targetType: inline
+    script: choco install directx-sdk
+    verbosePreference: stop
+  displayName: installare directx.sdk
+
+#- task: DotNetCoreCLI@2
+#  displayName: Build the project - Release
+#  inputs:
+#    command: build
+#    arguments: --no-restore --configuration Release --output "$(percorsoPostBuild)"
+#    projects: '$(percorsoPreBuild)'
+
+
+#########   PROCESSO DI CONSISTENZA   #########
+
+#controllo file .png
+- template: checkGrafic.yml
+  parameters:
+    percorsoPreBuild: $(percorsoPreBuild)
+    numeroFile: $(numeroFilePNG)
+    extension: $(extensionPNG)
+
+#controllo file .gif
+- template: checkGrafic.yml
+  parameters:
+    percorsoPreBuild: $(percorsoPreBuild)
+    numeroFile: $(numeroFileGIF)
+    extension: $(extensionGIF)
+
+#controllo file .dds
+- template: checkGrafic.yml
+  parameters:
+    percorsoPreBuild: $(percorsoPreBuild)
+    numeroFile: $(numeroFileDDS)
+    extension: $(extensionDDS)
+
+#controllo file .mp3
+- template: checkAudio.yml
+  parameters:
+    percorsoPreBuild: $(percorsoPreBuild)
+    numeroFile: $(numeroFileMP3)
+    extension: $(extensionMP3)
+
+#controllo file .wav
+- template: checkAudio.yml
+  parameters:
+    percorsoPreBuild: $(percorsoPreBuild)
+    numeroFile: $(numeroFileWAV)
+    extension: $(extensionWAV)
+
+
+#########   PROCESSO DI BUILD   #########
+
+# build del gioco
+#- script: dotnet build --configuration $(buildConfiguration) --input $(percorsoPreBuild) --output $(percorsoPostBuild)
+#  displayName: dotnet build $(buildConfiguration)
+#  executionGroup: 1
+
+
+##########   FASE DI DEPLOY   #########
+
+#creazione del programma shell per controllo dimensione
+- powershell: |
+      new-item checkDim.ps1 -type file -force -value '
+      $output = (Get-ChildItem $(percorsoPreBuild)\ -recurse | measure Length -sum).sum
+      if($output -gt $(pesoMassimo)){
+
+        Write-Error "Dimension of directory is too big for an DVD"
+        exit 1
+
+      }'
+  displayName: creazione dello script checkDim.ps1
+
+#Controllo dimensione per caricamento su un DVD
+- task: PowerShell@2
+  inputs:
+    targetType: filePath
+    filePath: $(System.DefaultWorkingDirectory)\checkDim.ps1
+  displayName: controllo dimensione per caricare su DVD
+
 #Pubblicazione su steam
 #download di steamworks_sdk per la pubblicazione su steam
 - powershell: Invoke-WebRequest -Uri "https://partner.steamgames.com/downloads/steamworks_sdk_153a.zip" -OutFile ( New-Item -Path "$(System.DefaultWorkingDirectory)\steamsdk\steamworks_sdk_153a.zip" -Force )
   displayName: Download steamworks_sdk
-
-- powershell: ls $(System.DefaultWorkingDirectory)\steamsdk\
 
 #unzip steamworks_sdk
 - task: ExtractFiles@1
@@ -59,9 +162,6 @@ steps:
     archiveFilePatterns: $(System.DefaultWorkingDirectory)\steamsdk\steamworks_sdk_153a.zip
     destinationFolder: $(System.DefaultWorkingDirectory)\steamsdk\
     cleanDestinationFolder: false
-
-- powershell: ls $(System.DefaultWorkingDirectory)\steamsdk\
-- powershell: ls $(System.DefaultWorkingDirectory)\steamsdk\sdk\
 
 #copio i file del gioco in steamworks_sdk
 - task: CopyFiles@2
@@ -71,17 +171,12 @@ steps:
     targetFolder: $(System.DefaultWorkingDirectory)\steamsdk\sdk\tools\ContentBuilder\content
     cleanTargetFolder: true
 
-- powershell: ls $(System.DefaultWorkingDirectory)\steamsdk\sdk\tools\ContentBuilder\content
-- powershell: ls $(System.DefaultWorkingDirectory)\steamsdk\sdk\tools\ContentBuilder\scripts\
-
 #pulire la directory prima di immettere gli script
 - task: DeleteFiles@1
   inputs:
     SourceFolder: $(System.DefaultWorkingDirectory)\steamsdk\sdk\tools\ContentBuilder\scripts\
     Contents: '**/*'
   displayName: pulire la directory prima di immettere gli script
-
-- powershell: ls $(System.DefaultWorkingDirectory)\steamsdk\sdk\tools\ContentBuilder\scripts\
 
 #creo primo script per steamworks_sdk
 - powershell: |
@@ -93,8 +188,8 @@ steps:
       "Preview" "1" // 0 nothing preview, 1 make this a preview build only, nothing is uploaded
       "Local" "" // put content on local content server instead of uploading to Steam
       "SetLive" "AlphaTest" // set this build live on beta branch AlphaTest
-      "ContentRoot" "${System.DefaultWorkingDirectory}\steamsdk\sdk\tools\ContentBuilder\content" // content root folder relative to this script file
-      "BuildOutput" "${System.DefaultWorkingDirectory}\steamsdk\build_output\" // put build cache and log files on different drive for better performance
+      "ContentRoot" "$(System.DefaultWorkingDirectory)\steamsdk\sdk\tools\ContentBuilder\content" // content root folder relative to this script file
+      "BuildOutput" "$(System.DefaultWorkingDirectory)\steamsdk\build_output\" // put build cache and log files on different drive for better performance
 
       "Depots"
       {
@@ -103,8 +198,6 @@ steps:
       }
     }'
   displayName: creo script App Build per steamworks_sdk
-
-- powershell: cat $(System.DefaultWorkingDirectory)\steamsdk\sdk\tools\ContentBuilder\scripts\app_build_1946.vdf
 
 #creo secondo script per steamworks_sdk
 - powershell: |
@@ -115,7 +208,7 @@ steps:
       "DepotID" "19461"
 
       // absolute path to your content folder
-      "contentroot" "${System.DefaultWorkingDirectory}\steamsdk\sdk\tools\ContentBuilder\content"
+      "contentroot" "$(System.DefaultWorkingDirectory)\steamsdk\sdk\tools\ContentBuilder\content"
 
       // include all files recursivley
       "FileMapping"
@@ -134,4 +227,23 @@ steps:
     }'
   displayName: creo script DeportBild per steamworks_sdk
 
-- powershell: cat $(System.DefaultWorkingDirectory)\steamsdk\sdk\tools\ContentBuilder\scripts\depot_build_19461.vdf
+#caricare il gioco
+#- script: '$(System.DefaultWorkingDirectory)\steamsdk\steamworks_sdk_153a\sdk\tools\ContentBuilder\builder\steamcmd.exe +login "$(account_name_steam)" "$(password_steam)" +run_app_build $(System.DefaultWorkingDirectory)\steamsdk\steamworks_sdk_153a\sdk\tools\ContentBuilder\scripts\app_build_1946.vdf +quit'
+#  displayName: carico il gioco su steam
+
+  #script per il download del runtime di DirectX per l'inserimento nel file ISO
+- powershell: Invoke-WebRequest -Uri "https://www.microsoft.com/it-IT/download/confirmation.aspx?id=35" -OutFile "$(PercorsoPostBuild)\dxwebsetup.exe"
+  displayName: download Directx runtime
+
+#Creazione artefatto ISO
+
+#download powerISO da choco
+- powershell: choco install poweriso
+  displayName: installazione di powerISO
+
+#script che prende tutto quello che c'è nella directory $(percorsoPostBuild) e lo mette in una ISO che chiama game.iso
+- script: '"c:\Program Files\PowerISO\piso.exe" create -o $(System.DefaultWorkingDirectory)\game.iso -add $(percorsoPostBuild) /'
+  displayName: Trasformazione del progetto in un artefatto .iso
+
+
+##########   FASE DI PUBBLICAZIONE AD   ##########
