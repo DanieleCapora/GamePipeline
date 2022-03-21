@@ -156,6 +156,8 @@ steps:
 - powershell: Invoke-WebRequest -Uri "https://partner.steamgames.com/downloads/steamworks_sdk_153a.zip" -OutFile ( New-Item -Path "$(System.DefaultWorkingDirectory)\steamsdk\steamworks_sdk_153a.zip" -Force )
   displayName: Download steamworks_sdk
 
+- powershell: ls $(System.DefaultWorkingDirectory)\steamsdk\
+
 #unzip steamworks_sdk
 - task: ExtractFiles@1
   inputs:
